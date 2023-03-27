@@ -5,7 +5,6 @@
 # Fail on any non-zero exit code
 set -eo pipefail
 
-[[ "$USER" = "root" ]] || echo -e "EXIT: Run command as root \nsudo $0\n" && exit 1
 
 # Default config
 CONFIG_FILE="default.config.yaml"
@@ -30,6 +29,17 @@ while getopts ":ac:" opt; do
     esac
 done
 shift $((OPTIND - 1))
+
+
+
+# Mounting requiers root
+if [[ "$USER" != "root" ]]; then
+    echo "EXIT 1: Run command as root:"
+    echo "sudo $0"
+    exit 1
+fi
+
+
 
 function set_mount_path() {
     if [[ $MOUNT_ALL_CONTAINERS = true ]]; then
